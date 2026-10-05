@@ -22,6 +22,7 @@
   --alerta-texto: #b3161b;
   --alerta-fundo: #fff1f1;
   --alerta-linha: #f6c9ca;
+  --campo-borda: #6b818c;
 
   --raio: 12px;
   --raio-botao: 10px;
@@ -231,9 +232,6 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .botao:active { transform: translateY(1px); }
 
-.botao--whats { background: var(--verde); color: var(--azul); }
-.botao--whats:hover { background: #35cc6f; }
-
 .botao--claro { background: #fff; color: var(--azul); }
 .botao--claro:hover { background: #e6f0f4; }
 
@@ -323,71 +321,177 @@ a:hover { text-decoration-thickness: 2px; }
   font-weight: 700;
 }
 
-/* Pedido de CCT */
+/* Formulário de CCT */
 
-.pedidos {
-  display: grid;
-  gap: 1.25rem;
+.form-cct {
+  max-width: 44rem;
   margin-top: 2rem;
-}
-
-@media (min-width: 56rem) {
-  .pedidos { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-}
-
-.pedido {
-  display: flex;
-  flex-direction: column;
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.25rem, 4vw, 2.25rem);
   border-radius: var(--raio);
   background: var(--papel);
   box-shadow: var(--sombra);
 }
 
-.pedido h3 {
+.form-cct fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+
+.escolha legend,
+.campo label {
+  display: block;
+  font-weight: 800;
+  color: var(--azul);
+}
+
+.escolha legend { font-size: 1.25rem; margin-bottom: 0.75rem; }
+
+.escolha__opcoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.escolha__opcao {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 64px;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--campo-borda);
+  border-radius: var(--raio-botao);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--azul);
+  cursor: pointer;
+  transition: border-color 160ms ease-out, background-color 160ms ease-out;
+}
+.escolha__opcao:hover { border-color: var(--azul); }
+.escolha__opcao:has(input:checked) { border-color: var(--azul); background: var(--papel-alt); }
+.escolha__opcao:has(input:focus-visible) { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+.escolha__opcao input {
+  width: 1.375rem;
+  height: 1.375rem;
+  margin: 0;
+  flex: none;
+  accent-color: var(--azul);
+}
+.escolha__opcao input:focus-visible { outline: none; }
+
+.form-cct__campos { margin-top: 1.75rem; }
+.form-cct__campos[hidden] { display: none; }
+
+.campo + .campo,
+.grupo .campo:first-of-type,
+.grupo + .campo { margin-top: 1.375rem; }
+.grupo[disabled] { display: none; }
+
+.campo label { font-size: 1.0625rem; margin-bottom: 0.375rem; }
+
+.campo__ajuda {
+  margin: -0.125rem 0 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.campo input,
+.campo select {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.75rem 0.875rem;
+  border: 1.5px solid var(--campo-borda);
+  border-radius: var(--raio-botao);
+  background: var(--papel);
+  color: var(--tinta);
+  font: inherit;
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 160ms ease-out;
+}
+.campo select {
+  appearance: none;
+  padding-right: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23023a51' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1.25rem;
+  cursor: pointer;
+}
+.campo input:hover,
+.campo select:hover { border-color: var(--azul); }
+.campo input:focus-visible,
+.campo select:focus-visible { border-color: var(--azul); outline-offset: 1px; }
+.campo [aria-invalid="true"] { border-color: var(--alerta-texto); border-width: 2px; }
+
+.campo__erro {
+  margin-top: 0.375rem;
+  font-weight: 700;
+  color: var(--alerta-texto);
+}
+.escolha .campo__erro { margin-top: 0.625rem; }
+
+.campo__sugestao {
+  margin-top: 0.5rem;
+  color: var(--tinta);
+}
+.campo__sugestao button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--azul);
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.form-cct__isca {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.cf-turnstile { margin-top: 1.5rem; }
+.cf-turnstile:empty { margin-top: 0; }
+
+.form-cct [data-erro-envio] { margin-top: 1.5rem; }
+
+.form-cct__enviar {
+  width: 100%;
+  margin-top: 1.75rem;
+  font-size: 1.125rem;
+}
+.form-cct__enviar:disabled { opacity: 0.7; cursor: progress; }
+
+.form-cct__lgpd {
+  margin-top: 0.875rem;
+  font-size: 0.9375rem;
+  color: var(--tinta-suave);
+}
+
+.form-cct__sucesso:focus { outline: none; }
+.form-cct__sucesso h3 {
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--azul);
 }
+.form-cct__sucesso p { margin-top: 0.75rem; font-size: 1.125rem; max-width: 50ch; }
+.form-cct__sucesso .botao { margin-top: 1.5rem; }
 
-.pedido__rotulo {
-  margin-top: 1rem;
-  font-weight: 700;
-  color: var(--tinta-suave);
-}
+.botao--claro-borda { border-color: var(--azul); color: var(--azul); background: var(--papel); }
+.botao--claro-borda:hover { background: var(--papel-alt); }
 
-.campos {
-  flex: 1;
-  margin: 0.5rem 0 0;
-  padding: 0;
-  list-style: none;
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-
-.campos li {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  padding-block: 0.5rem;
-  border-bottom: 1px solid var(--papel-alt);
-}
-.campos li::before {
-  content: "";
-  flex: none;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 2px;
-  background: var(--verde);
-  transform: translateY(-0.1em);
-}
-
-.pedido__acoes {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: 0.75rem;
-  margin-top: 1.5rem;
-}
-.pedido__acoes .botao--whats { grid-column: 1 / -1; }
 
 /* E-mail por aparelho: no toque, o mailto abre o app já preenchido;
    com mouse quase ninguém tem app de e-mail padrão, então oferecemos Gmail/Outlook na web. */
@@ -396,11 +500,6 @@ a:hover { text-decoration-thickness: 2px; }
 }
 @media not all and (pointer: coarse) {
   .so-toque { display: none !important; }
-}
-
-.copiar {
-  margin-top: 1rem;
-  color: var(--tinta-suave);
 }
 
 .copiar__email {

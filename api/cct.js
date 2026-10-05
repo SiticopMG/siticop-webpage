@@ -83,8 +83,11 @@ export async function POST(request) {
   if (!entrada || typeof entrada !== 'object') return responder(400, { erro: 'formato' });
 
   // Robôs: campo invisível preenchido ou envio rápido demais. Responde "ok" sem enviar nada.
-  const inicio = Number(entrada.inicio);
-  if (entrada.site || !Number.isFinite(inicio) || Date.now() - inicio < TEMPO_MINIMO_MS) {
+  // `tempo` é a duração medida no navegador. `inicio` (horário do aparelho) só vem de páginas
+  // abertas antes desta versão; pode ser removido depois que os caches expirarem.
+  const tempo = 'tempo' in entrada ? Number(entrada.tempo) : Date.now() - Number(entrada.inicio);
+  if (entrada.site || !Number.isFinite(tempo) || tempo < TEMPO_MINIMO_MS) {
+    console.warn('[cct] envio descartado como robô:', entrada.site ? 'campo isca preenchido' : `tempo de preenchimento ${tempo} ms`);
     return responder(200, { ok: true });
   }
 

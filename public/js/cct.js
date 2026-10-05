@@ -23,7 +23,8 @@ function iniciar(form) {
   const hoje = new Date();
   hoje.setMinutes(hoje.getMinutes() - hoje.getTimezoneOffset());
   form.elements.data_admissao.max = hoje.toISOString().slice(0, 10);
-  form.elements.inicio.value = Date.now();
+  // Tempo de preenchimento medido no próprio navegador (performance.now não depende da hora do aparelho).
+  let inicio = performance.now();
 
   const tipoAtual = () => form.elements.tipo.value;
 
@@ -106,6 +107,7 @@ function iniciar(form) {
     erroEnvio.hidden = true;
 
     const dados = Object.fromEntries(new FormData(form));
+    dados.tempo = Math.round(performance.now() - inicio);
     const resultado = validarPedido(dados);
     if (!resultado.ok) {
       aplicarErros(resultado.erros);
@@ -141,7 +143,7 @@ function iniciar(form) {
 
   sucesso.querySelector('[data-novo-pedido]').addEventListener('click', () => {
     form.reset();
-    form.elements.inicio.value = Date.now();
+    inicio = performance.now();
     for (const aviso of form.querySelectorAll('.campo__erro')) aviso.hidden = true;
     for (const campo of form.querySelectorAll('[aria-invalid]')) campo.setAttribute('aria-invalid', 'false');
     sugestao.hidden = true;
